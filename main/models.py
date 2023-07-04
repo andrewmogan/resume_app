@@ -92,6 +92,7 @@ class Portfolio(models.Model):
         verbose_name_plural = 'Portfolio Profiles'
         verbose_name = 'Portfolio'
         ordering = ["name"]
+
     date = models.DateTimeField(blank=True, null=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     description = models.CharField(max_length=500, blank=True, null=True)
@@ -111,6 +112,29 @@ class Portfolio(models.Model):
     def get_absolute_url(self):
         return f"/portfolio/{self.slug}"
 
+class Publication(models.Model):
+    class Meta:
+        verbose_name_plural = 'Publications'
+        verbose_name = 'Publication'
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    journal = models.CharField(max_length=255)
+    date = models.DateField()
+    url = models.URLField()
+    slug = models.SlugField(null=True, blank=True)
+    image = models.FilePathField(path='/img')
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.name)
+        super(Publication, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return f"/publication/{self.slug}"
 
 class Blog(models.Model):
 
